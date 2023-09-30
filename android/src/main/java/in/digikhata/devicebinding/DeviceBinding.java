@@ -8,4 +8,10 @@ public class DeviceBinding {
         Log.i("Echo", value);
         return value;
     }
+
+    public String checkPermission() {
+
+        Log.i("Echo","checkPermission");
+        return "TEST";
+    }
 }

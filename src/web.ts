@@ -7,4 +7,37 @@ export class DeviceBindingWeb extends WebPlugin implements DeviceBindingPlugin {
     console.log('ECHO', options);
     return options;
   }
+
+  // checkPermission(): Promise<{ value: string }>;
+  async checkPermission(): Promise<{ value: string }> {
+    return {value:"WEB"};
+  }
+
+  async checkSMSPermisson(): Promise<{ value: string }>{
+    return {value:"WEB"}
+  }
+
+  async checkSimPresent(): Promise<{ value: boolean }> {
+      return {value:false}
+  }
+
+  async getSubscriptionIds(): Promise<{ value: string }> {
+      return {value:""}
+  }
+
+  async sendMessage(options: {
+    destinationNumber: string,
+    sourceNumber: string,
+    messageContent: string,
+    subId: number
+  }): Promise<{ value: boolean; }> {
+    console.log('ECHO', options);  
+    return { value: false }
+  }
+
+  async setSmartIntent(options: { enable: boolean }): Promise<{ value: boolean }> {
+    console.log('ECHO', options);  
+    return { value: false }
+  }
+
 }

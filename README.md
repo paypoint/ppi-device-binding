@@ -20,6 +20,7 @@ npx cap sync
 * [`getSubscriptionIds()`](#getsubscriptionids)
 * [`sendMessage(...)`](#sendmessage)
 * [`setSmartIntent(...)`](#setsmartintent)
+* [`iOSComposeSMS(...)`](#ioscomposesms)
 
 </docgen-index>
 
@@ -111,6 +112,21 @@ setSmartIntent(options: { enable: boolean; }) => Promise<{ value: boolean; }>
 | **`options`** | <code>{ enable: boolean; }</code> |
 
 **Returns:** <code>Promise&lt;{ value: boolean; }&gt;</code>
+
+--------------------
+
+
+### iOSComposeSMS(...)
+
+```typescript
+iOSComposeSMS(options: { destinationNumber: string; messageContent: string; }) => Promise<any>
+```
+
+| Param         | Type                                                                |
+| ------------- | ------------------------------------------------------------------- |
+| **`options`** | <code>{ destinationNumber: string; messageContent: string; }</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
 
 --------------------
 

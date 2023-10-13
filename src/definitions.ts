@@ -10,4 +10,5 @@ export interface DeviceBindingPlugin {
   sendMessage(options:{destinationNumber:string, sourceNumber: string,  messageContent:string,subId:number}): Promise<{ value: boolean }>;
   // showMessageStatus(): Promise<{ value: string }>;
   setSmartIntent(options: { enable: boolean }): Promise<{ value: boolean }>;
+  iOSComposeSMS(options: { destinationNumber: string, messageContent: string }): Promise<any>;
 }

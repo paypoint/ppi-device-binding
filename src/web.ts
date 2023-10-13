@@ -40,4 +40,12 @@ export class DeviceBindingWeb extends WebPlugin implements DeviceBindingPlugin {
     return { value: false }
   }
 
+  async iOSComposeSMS(options: {
+    destinationNumber: string,
+    messageContent: string
+  }): Promise<any>{
+    console.log('ECHO', options);  
+    return { value: "" }
+  }
+
 }

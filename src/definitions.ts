@@ -11,4 +11,8 @@ export interface DeviceBindingPlugin {
   // showMessageStatus(): Promise<{ value: string }>;
   setSmartIntent(options: { enable: boolean }): Promise<{ value: boolean }>;
   iOSComposeSMS(options: { destinationNumber: string, messageContent: string }): Promise<any>;
+  echo2(options: { value: string }): Promise<{ value: string }>;
+  // requestWithWrapper(options: { url: string }): Promise<any>;
+  requestWithWrapper(options: { url: string, method: string, parameters: object, headers: object }): Promise<{ value: any }>;
+
 }

@@ -48,4 +48,13 @@ export class DeviceBindingWeb extends WebPlugin implements DeviceBindingPlugin {
     return { value: "" }
   }
 
+  async requestWithWrapper(options: { url: string, method: string, parameters: object, headers: object }): Promise<any>{
+    console.log("options : ", options);
+    return {value:""}
+  }
+
+  async echo2(options: { value: string }): Promise<{ value: string }> {
+    console.log('ECHO', options);
+    return options;
+  }
 }

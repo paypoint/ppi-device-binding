@@ -6,6 +6,8 @@
 CAP_PLUGIN(DeviceBindingPlugin, "DeviceBinding",
            CAP_PLUGIN_METHOD(echo, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(iOSComposeSMS, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(echo2,CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(requestWithWrapper,CAPPluginReturnPromise);
 )
 
 

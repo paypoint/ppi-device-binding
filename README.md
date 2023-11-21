@@ -21,6 +21,8 @@ npx cap sync
 * [`sendMessage(...)`](#sendmessage)
 * [`setSmartIntent(...)`](#setsmartintent)
 * [`iOSComposeSMS(...)`](#ioscomposesms)
+* [`echo2(...)`](#echo2)
+* [`requestWithWrapper(...)`](#requestwithwrapper)
 
 </docgen-index>
 
@@ -127,6 +129,36 @@ iOSComposeSMS(options: { destinationNumber: string; messageContent: string; }) =
 | **`options`** | <code>{ destinationNumber: string; messageContent: string; }</code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### echo2(...)
+
+```typescript
+echo2(options: { value: string; }) => Promise<{ value: string; }>
+```
+
+| Param         | Type                            |
+| ------------- | ------------------------------- |
+| **`options`** | <code>{ value: string; }</code> |
+
+**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
+
+--------------------
+
+
+### requestWithWrapper(...)
+
+```typescript
+requestWithWrapper(options: { url: string; method: string; parameters: object; headers: object; }) => Promise<{ value: any; }>
+```
+
+| Param         | Type                                                                               |
+| ------------- | ---------------------------------------------------------------------------------- |
+| **`options`** | <code>{ url: string; method: string; parameters: object; headers: object; }</code> |
+
+**Returns:** <code>Promise&lt;{ value: any; }&gt;</code>
 
 --------------------
 

@@ -123,6 +123,14 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
                 composeVC.body = messageBody
                 composeVC.recipients = [recipient]
                 composeVC.messageComposeDelegate = self
+                if #available(iOS 17.0, *) {
+                    composeVC.setUPIVerificationCodeSendCompletion { result in
+                        NSLog("UPI send callback - message sent: \(result)")
+                    }
+                } else {
+                    // Fallback on earlier versions
+                }
+                        
                 
                 if let rootViewController = self.bridge?.viewController {
                     rootViewController.present(composeVC, animated: true, completion: nil)

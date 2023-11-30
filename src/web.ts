@@ -57,4 +57,8 @@ export class DeviceBindingWeb extends WebPlugin implements DeviceBindingPlugin {
     console.log('ECHO', options);
     return options;
   }
+
+  async iOSSimPresent(): Promise<{ value: string; }> {
+      return {value:""}
+  }
 }

@@ -23,6 +23,7 @@ npx cap sync
 * [`iOSComposeSMS(...)`](#ioscomposesms)
 * [`echo2(...)`](#echo2)
 * [`requestWithWrapper(...)`](#requestwithwrapper)
+* [`iOSSimPresent()`](#iossimpresent)
 
 </docgen-index>
 
@@ -159,6 +160,17 @@ requestWithWrapper(options: { url: string; method: string; parameters: object; h
 | **`options`** | <code>{ url: string; method: string; parameters: object; headers: object; }</code> |
 
 **Returns:** <code>Promise&lt;{ value: any; }&gt;</code>
+
+--------------------
+
+
+### iOSSimPresent()
+
+```typescript
+iOSSimPresent() => Promise<{ value: string; }>
+```
+
+**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
 
 --------------------
 

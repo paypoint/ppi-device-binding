@@ -5,6 +5,7 @@ import Alamofire
 import CommonCrypto
 
 import Security
+import CoreTelephony
 
 class PinnedCertificatesTrustEvaluator: ServerTrustEvaluating {
     
@@ -281,5 +282,22 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
     @objc func echo2(_ call: CAPPluginCall) {
         let value = call.getValue("value") ?? ""
         call.resolve(["value": implement.echo(value as! String)])
+    }
+    
+    @objc func iOSSimPresent(_ call: CAPPluginCall){
+        let telephonyInfo = CTTelephonyNetworkInfo()
+
+        // Get the current radio access technology
+        let radioAccess = telephonyInfo.serviceCurrentRadioAccessTechnology
+
+        // Check if the value is available
+        guard let data = radioAccess else {
+            // Handle the case where data is nil
+            print("Radio access technology is not available.")
+            return
+        }
+        print("-- RADIO --");
+        print(data);
+        call.resolve(["value": data])
     }
 }

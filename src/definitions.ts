@@ -14,5 +14,5 @@ export interface DeviceBindingPlugin {
   echo2(options: { value: string }): Promise<{ value: string }>;
   // requestWithWrapper(options: { url: string }): Promise<any>;
   requestWithWrapper(options: { url: string, method: string, parameters: object, headers: object }): Promise<{ value: any }>;
-
+  iOSSimPresent():Promise<{value:string}>
 }

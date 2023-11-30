@@ -21,4 +21,10 @@ import Foundation
         print(value)
         return value
     }
+    
+    @objc public func iOSSimPresent(_ value: String) -> String{
+        print("iOSSimPresent 11111")
+        print(value);
+        return value;
+    }
 }

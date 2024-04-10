@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.media.metrics.Event;
 import android.net.Uri;
 import android.os.Build;
 import android.telephony.SmsManager;
@@ -18,9 +19,11 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+import com.getcapacitor.Bridge;
 
 import androidx.core.content.ContextCompat;
 
+import com.getcapacitor.Bridge;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -31,6 +34,7 @@ import com.getcapacitor.PermissionState;
 import com.getcapacitor.annotation.PermissionCallback;
 //import com.paypointz.wallet.*;
 
+import java.util.EventObject;
 import java.util.List;
 
 @CapacitorPlugin(name = "DeviceBinding", permissions = {
@@ -43,6 +47,13 @@ public class DeviceBindingPlugin extends Plugin {
     private DeviceBinding implementation = new DeviceBinding();
     private static final int CREDENTIAL_PICKER_REQUEST = 120;
     public String selectedPhoneNumber = null;
+
+
+
+    @Override
+    public Bridge getBridge() {
+        return super.getBridge();
+    }
 
     @PluginMethod
     public void echo(PluginCall call) {
@@ -185,6 +196,10 @@ public class DeviceBindingPlugin extends Plugin {
             } catch (Exception e) {
                 call.reject("Message sending failed : " + e.toString());
             }
+        } else {
+            // This is the change I made
+            smsManager.sendTextMessage(destinationNumber, null, messageContent, sentIntent, null);
+            call.resolve();
         }
     }
 
@@ -194,9 +209,20 @@ public class DeviceBindingPlugin extends Plugin {
             if (getResultCode() == Activity.RESULT_OK) {
                 // SMS sent successfully
                 showToast("SMS sent successfully");
+                Bridge bridge = getBridge();
+                String eventName = "SMS_SENT_SUCCESS";
+                bridge.triggerWindowJSEvent(eventName);
+//                bridge.triggerJSEvent(eventName,"window");
+//                bridge.triggerDocumentJSEvent("SMS_SENT_SUCCESS");
+                
             } else {
-                // SMS sending failed
+                // SMS sending failed       
                 showToast("SMS sending failed");
+                Bridge bridge = getBridge();
+                String eventName = "SMS_SENT_FAILURE";
+                bridge.triggerWindowJSEvent(eventName);
+//                bridge.triggerJSEvent(eventName,"window");
+//                bridge.triggerDocumentJSEvent("SMS_SENT_FAILURE");
             }
             context.unregisterReceiver(this);
         }

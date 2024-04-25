@@ -9,10 +9,10 @@ import CoreTelephony
 
 class PinnedCertificatesTrustEvaluator: ServerTrustEvaluating {
     
-    private let localPublicKey: String
+    private let localPublicKeys: [String]
     
-    init(publicKey: String) {
-        self.localPublicKey = publicKey
+    init(publicKeys: [String]) {
+        self.localPublicKeys = publicKeys
     }
     
     func evaluate(_ trust: SecTrust, forHost host: String) throws {
@@ -23,7 +23,7 @@ class PinnedCertificatesTrustEvaluator: ServerTrustEvaluating {
         }
         
         // Compare the server's public key with the locally stored public key
-        if serverPublicKey == localPublicKey {
+        if localPublicKeys.contains(serverPublicKey) {
             // Public key pinning successful
         } else {
             throw AFError.serverTrustEvaluationFailed(reason: .noRequiredEvaluator(host: host))
@@ -52,7 +52,7 @@ class PinnedCertificatesTrustEvaluator: ServerTrustEvaluating {
             return nil
         }
         
-        print("certificate 111 : ", certificate);
+//        print("certificate 111 : ", certificate);
         
         var publicKey: SecKey?
         let policy = SecPolicyCreateBasicX509()
@@ -68,12 +68,12 @@ class PinnedCertificatesTrustEvaluator: ServerTrustEvaluating {
         guard let publicKeyData = SecKeyCopyExternalRepresentation(publicKey!, &error) as Data? else {
             return nil
         }
-        print("certificate 222 : ", publicKeyData.base64EncodedString());
+//        print("certificate 222 : ", publicKeyData.base64EncodedString());
         
         let data: Data = publicKeyData as Data
         let serverHashKey = PinnedCertificatesTrustEvaluator.sha256(data: data)
         
-        print("certificate 333 : ", serverHashKey);
+//        print("certificate 333 : ", serverHashKey);
         
         return serverHashKey;
 //        return publicKeyData.base64EncodedString()
@@ -85,21 +85,15 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
     
     private let implement = DeviceBinding()
     private var autoCancelTimer: Timer? // Instance variable to store the timer
-
-    
-    // Your public keys for SSL Certificate Pinning
-    private let localPublicKeys: [String: String] = [
-        "api.openweathermap.org": "axmGTWYycVN5oCjh3GJrxWVndLSZjypDO6evrHMwbXg=",
-        // Add other domain-public key pairs as needed
-    ]
     
     private lazy var afSession: Session = {
         
+    
         let evaluators: [String: ServerTrustEvaluating] = [
-            "api.openweathermap.org": PinnedCertificatesTrustEvaluator(publicKey: "axmGTWYycVN5oCjh3GJrxWVndLSZjypDO6evrHMwbXg="),
-            "mb2cv1.paypointz.com": PinnedCertificatesTrustEvaluator(publicKey: "hsL+5qyGbPCknWO9N5DrnopUwL3ba1nUDLYoqNOfxdQ=")
+            "mb2cv1.paypointz.com": PinnedCertificatesTrustEvaluator(
+                publicKeys: ["hsL+5qyGbPCknWO9N5DrnopUwL3ba1nUDLYoqNOfxdQ=","hsL+5qyGbPCknWO9N5DrnopUwL3ba1nUDLYoqNOfxdQ="]
+            )
         ]
-
 
         let manager = ServerTrustManager(evaluators: evaluators)
         return Session(serverTrustManager: manager)

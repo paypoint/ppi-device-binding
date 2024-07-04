@@ -86,6 +86,11 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
     private let implement = DeviceBinding()
     private var autoCancelTimer: Timer? // Instance variable to store the timer
     
+    // Your public keys for SSL Certificate Pinning
+    private let localPublicKeys: [String: String] = [
+        // Add other domain-public key pairs as needed
+    ]
+    
     private lazy var afSession: Session = {
         
     
@@ -180,11 +185,12 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
         var requestHeaders: HTTPHeaders = [:]
         
         // Check if custom headers are provided
-        if let headers = call.getObject("headers") as? [String: String] {
-            // If custom headers are provided, override the request headers
-            requestHeaders = HTTPHeaders(headers)
-        }
-//        
+        // Converting all header values to string
+        if let headers = call.getObject("headers") {
+                for (key, value) in headers {
+                    requestHeaders[key] = String(describing: value)
+                }
+            }//
         
 //        let requestHeaders: HTTPHeaders = [
 //            "MobileNo": "8655874341",

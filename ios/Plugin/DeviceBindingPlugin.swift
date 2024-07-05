@@ -87,9 +87,7 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
     private var autoCancelTimer: Timer? // Instance variable to store the timer
     
     // Your public keys for SSL Certificate Pinning
-    private let localPublicKeys: [String: String] = [
-        // Add other domain-public key pairs as needed
-    ]
+    private let localPublicKeys: [String: String] = [:]
     
     private lazy var afSession: Session = {
         

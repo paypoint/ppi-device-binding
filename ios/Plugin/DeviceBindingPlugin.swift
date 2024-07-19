@@ -139,8 +139,7 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
                         composeVC.dismiss(animated: false) {
                             self?.sendSMSResultEvent(status: .cancelled)
                         }
-                        self?.autoCancelTimer?.invalidate()
-                        self?.autoCancelTimer = nil
+                        self?.cancelAutoDismissTimer()
                     }
                 }
                 
@@ -152,6 +151,8 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
     }
     
     func sendSMSResultEvent(status: MessageComposeResult) {
+        cancelAutoDismissTimer()
+        
         var statusString = ""
         switch status {
         case .sent:
@@ -171,6 +172,11 @@ public class DeviceBindingPlugin: CAPPlugin, MFMessageComposeViewControllerDeleg
     public func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         controller.dismiss(animated: true, completion: nil)
         sendSMSResultEvent(status: result)
+    }
+
+    func cancelAutoDismissTimer() {
+        autoCancelTimer?.invalidate()
+        autoCancelTimer = nil
     }
     
     @objc public func requestWithWrapper(_ call: CAPPluginCall) {

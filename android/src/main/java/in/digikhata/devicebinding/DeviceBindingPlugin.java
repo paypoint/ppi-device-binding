@@ -1,5 +1,7 @@
 package in.digikhata.devicebinding;
 
+import static android.content.Context.RECEIVER_EXPORTED;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -19,36 +21,34 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
-import com.getcapacitor.Bridge;
-
 import androidx.core.content.ContextCompat;
-
+import com.getcapacitor.Bridge;
 import com.getcapacitor.Bridge;
 import com.getcapacitor.JSObject;
+import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
-import com.getcapacitor.PermissionState;
 import com.getcapacitor.annotation.PermissionCallback;
 //import com.paypointz.wallet.*;
 
 import java.util.EventObject;
 import java.util.List;
 
-@CapacitorPlugin(name = "DeviceBinding", permissions = {
+@CapacitorPlugin(
+    name = "DeviceBinding",
+    permissions = {
         @Permission(alias = "phone_state", strings = { Manifest.permission.READ_PHONE_STATE }),
         @Permission(alias = "send_sms", strings = { Manifest.permission.SEND_SMS })
-})
-
+    }
+)
 public class DeviceBindingPlugin extends Plugin {
 
     private DeviceBinding implementation = new DeviceBinding();
     private static final int CREDENTIAL_PICKER_REQUEST = 120;
     public String selectedPhoneNumber = null;
-
-
 
     @Override
     public Bridge getBridge() {
@@ -90,8 +90,7 @@ public class DeviceBindingPlugin extends Plugin {
     @PermissionCallback
     private void phoneStatePermsCallback(PluginCall call) {
         JSObject ret = new JSObject();
-        if (getPermissionState("phone_state") == PermissionState.GRANTED
-                && getPermissionState("send_sms") == PermissionState.GRANTED) {
+        if (getPermissionState("phone_state") == PermissionState.GRANTED && getPermissionState("send_sms") == PermissionState.GRANTED) {
             ret.put("value", true);
             call.resolve(ret);
         } else {
@@ -143,8 +142,7 @@ public class DeviceBindingPlugin extends Plugin {
         if (hasReadPhoneStatePermission(context)) {
             SubscriptionManager subscriptionManager = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-                subscriptionManager = (SubscriptionManager) context
-                        .getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                subscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
                 @SuppressLint("MissingPermission")
                 List<SubscriptionInfo> subscriptionInfos = subscriptionManager.getActiveSubscriptionInfoList();
 
@@ -183,9 +181,12 @@ public class DeviceBindingPlugin extends Plugin {
         Log.d("SOURCE Number ", sourceNumber);
         Log.d("SIM SUB ID ", subId.toString());
 
-        PendingIntent sentIntent = PendingIntent.getBroadcast(activity, 0, new Intent("SMS_SENT"),
-                PendingIntent.FLAG_IMMUTABLE);
-        getContext().registerReceiver(smsSentReceiver, new IntentFilter("SMS_SENT"));
+        PendingIntent sentIntent = PendingIntent.getBroadcast(activity, 0, new Intent("SMS_SENT"), PendingIntent.FLAG_IMMUTABLE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getContext().registerReceiver(smsSentReceiver, new IntentFilter("SMS_SENT"), RECEIVER_EXPORTED);
+        } else {
+            getContext().registerReceiver(smsSentReceiver, new IntentFilter("SMS_SENT"));
+        }
 
         SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subId);
 
@@ -212,17 +213,17 @@ public class DeviceBindingPlugin extends Plugin {
                 Bridge bridge = getBridge();
                 String eventName = "SMS_SENT_SUCCESS";
                 bridge.triggerWindowJSEvent(eventName);
-//                bridge.triggerJSEvent(eventName,"window");
-//                bridge.triggerDocumentJSEvent("SMS_SENT_SUCCESS");
-                
+                //                bridge.triggerJSEvent(eventName,"window");
+                //                bridge.triggerDocumentJSEvent("SMS_SENT_SUCCESS");
+
             } else {
-                // SMS sending failed       
+                // SMS sending failed
                 showToast("SMS sending failed");
                 Bridge bridge = getBridge();
                 String eventName = "SMS_SENT_FAILURE";
                 bridge.triggerWindowJSEvent(eventName);
-//                bridge.triggerJSEvent(eventName,"window");
-//                bridge.triggerDocumentJSEvent("SMS_SENT_FAILURE");
+                //                bridge.triggerJSEvent(eventName,"window");
+                //                bridge.triggerDocumentJSEvent("SMS_SENT_FAILURE");
             }
             context.unregisterReceiver(this);
         }
@@ -233,16 +234,15 @@ public class DeviceBindingPlugin extends Plugin {
     }
 
     private boolean hasReadPhoneStatePermission(Context context) {
-        boolean hasReadPhoneState = ContextCompat.checkSelfPermission(context,
-                android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
-        boolean hasSendSMSPermission = ContextCompat.checkSelfPermission(context,
-                android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+        boolean hasReadPhoneState =
+            ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
+        boolean hasSendSMSPermission =
+            ContextCompat.checkSelfPermission(context, android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
         return hasReadPhoneState && hasSendSMSPermission;
     }
 
     @PluginMethod
     public void setSmartIntent(PluginCall call) {
-
         Log.d("ECHO", "Smart Intent Started");
 
         Boolean enable = call.getBoolean("enable");
@@ -263,7 +263,6 @@ public class DeviceBindingPlugin extends Plugin {
             } catch (Exception error) {
                 Log.d("ECHO-ERROR", error.toString());
             }
-
         } else {
             Log.d("ECHO", "setSmartIntent Called disabled");
             try {
@@ -283,17 +282,11 @@ public class DeviceBindingPlugin extends Plugin {
 
     private void enableSmartIntent(ComponentName component, PackageManager pm) {
         Log.d("ECHO", "Enable Triggered");
-        pm.setComponentEnabledSetting(
-                component,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
 
     private void disableSmartIntent(ComponentName component, PackageManager pm) {
         Log.d("ECHO", "Disabled Triggered");
-        pm.setComponentEnabledSetting(
-                component,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
     }
 }

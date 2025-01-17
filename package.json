@@ -1,6 +1,6 @@
 {
   "name": "ppi-device-binding",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "description": "PayPoint Device Binding Plugin",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
